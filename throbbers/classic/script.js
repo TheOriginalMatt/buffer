@@ -63,10 +63,6 @@ export class Classic {
 		}
 		this.cssHandler.removeCss();
 
-		// for (let i = 0; i < this.#CIRCLE_COUNT; i++) {
-		// 	$(this.circles[i]).remove();
-		// }
-
 		$(this.#CONTAINER_SELECTOR).remove();
 
 		this.state = 0; // Halted, waiting to be initialized.
