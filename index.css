@@ -1,2 +1,17 @@
-/* CSS files for each throbber */
-@import "./throbbers/classic/style.css"
+
+
+body {
+	margin: 0;
+	height: 100vh;
+	width: 100vw;
+}
+
+
+#container {
+	background-color: blue;
+	position: absolute;
+	height: 100px;
+	width: 100px;
+	left: calc(50% - 50px);
+	top: calc(50% - 50px);
+}
