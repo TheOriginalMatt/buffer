@@ -5,4 +5,5 @@ let myClassic = new Classic();
 
 myClassic.init();
 myClassic.run();
-// To-Do: uncomment myClassic.halt();
+setTimeout(() => {myClassic.halt();}, 1000);
+

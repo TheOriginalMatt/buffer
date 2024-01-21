@@ -1,15 +1,16 @@
 import { HandleCss } from "../../lib/HandleCss.js";
 
 export class Classic {
+	#CSS_FILE_PATH = "./throbbers/classic/style.css";
 	#CIRCLE_COUNT = 8;
 	#CONTAINER_WIDTH_IN_PX  = 100;
 	#CONTAINER_HEIGHT_IN_PX = 100;
 	#CIRCLE_DIAMETER_IN_PX = 25;
 	#CONTAINER_SELECTOR = "#container";
+	#WORKER_SCRIPT = "./throbbers/classic/worker.js";
 
 
 	constructor() {
-		this.cssFilePath = "./throbbers/classic/style.css";
 		this.state = 0; // Waiting to be initialized
 		this.cssHandler = null;
 		this.circles = {};
@@ -28,7 +29,7 @@ export class Classic {
 			return;
 		}
 		// Add the CSS file for this throbber
-		this.cssHandler = new HandleCss(this.cssFilePath);
+		this.cssHandler = new HandleCss(this.#CSS_FILE_PATH);
 		this.cssHandler.addCss();
 
 		let angle = 0;
@@ -47,19 +48,26 @@ export class Classic {
 			console.error("You cannot call un() if the throbber isn't initialized.");
 			return;
 		}
-
-
+		new Worker(this.#WORKER_SCRIPT);
+		console.log(this.state);
 		this.state = 2; // Running, can be halted.
+		console.log(this.state);
 	}
 
 	halt() {
 		console.debug("Classic - halt()");
+		console.log(this.state);
 		if (this.state != 2) {
 			console.error("You cannot call halt() if the throbber isn't already running.");
 			return;
 		}
 		this.cssHandler.removeCss();
 
+		// for (let i = 0; i < this.#CIRCLE_COUNT; i++) {
+		// 	$(this.circles[i]).remove();
+		// }
+
+		$(this.#CONTAINER_SELECTOR).remove();
 
 		this.state = 0; // Halted, waiting to be initialized.
 	}
