@@ -5,4 +5,4 @@ let myClassic = new Classic();
 
 myClassic.init();
 myClassic.run();
-myClassic.halt();
+// To-Do: uncomment myClassic.halt();

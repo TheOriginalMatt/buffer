@@ -1,3 +1,13 @@
-body {
-	background-color: green;
+#container {
+	height: 100px;
+	width: 100px;
+	border: 1px solid black;
+}
+
+.circle {
+	height: 25px;
+	width: 25px;
+	border-radius: 50%;
+	background-color: lightgray;
+	position: absolute;
 }
