@@ -2,7 +2,7 @@ import { HandleCss } from "../../lib/HandleCss.js";
 
 export class Classic {
 	#CSS_FILE_PATH = "./throbbers/classic/style.css";
-	#CIRCLE_COUNT = 8;
+	#CIRCLE_COUNT = 1;
 	#CONTAINER_WIDTH_IN_PX  = 100;
 	#CONTAINER_HEIGHT_IN_PX = 100;
 	#CIRCLE_DIAMETER_IN_PX = 25;
@@ -49,11 +49,11 @@ export class Classic {
 			return;
 		}
 		
-		let fps = 30;
+		let fps = 1;
 		let distancePerFrame = 5;
 		let circles = document.querySelectorAll(".circle");
 		let offset = 40;
-		let radius = 37.5; 
+		console.log(this.radius);
 
 		this.intervalId = setInterval(() => {
 			circles.forEach((el, id) => {
@@ -62,8 +62,12 @@ export class Classic {
 				let currentAngle = Math.round(Math.sin((currentXPos - this.#CONTAINER_HEIGHT_IN_PX  / 2 - offset) / 37.5));
 				let newAngle = currentAngle + distancePerFrame;
 
+
 				let xPos = Math.round(this.#CONTAINER_WIDTH_IN_PX  / 2 + this.radius * Math.cos(newAngle)) - offset;
 				let yPos = Math.round(this.#CONTAINER_HEIGHT_IN_PX / 2 + this.radius * Math.sin(newAngle)) - offset;
+
+				console.table({ currentX: currentXPos, currentAngle: currentAngle, newAngle: newAngle, newX: xPos})
+
 				el.style.top = xPos+"px";
 				el.style.left = yPos+"px";
 			});
