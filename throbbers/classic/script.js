@@ -7,7 +7,6 @@ export class Classic {
 	#CONTAINER_HEIGHT_IN_PX = 100;
 	#CIRCLE_DIAMETER_IN_PX = 25;
 	#CONTAINER_SELECTOR = "#container";
-	#WORKER_SCRIPT = "./throbbers/classic/worker.js";
 
 
 	constructor() {
@@ -20,6 +19,7 @@ export class Classic {
 		 * container width - (2 * cicle radius) -- or -- container width - circle diameter.
 		 */
 		this.radius = (this.#CONTAINER_WIDTH_IN_PX / 2) - (this.#CIRCLE_DIAMETER_IN_PX / 2); 
+		this.intervalId = -1;
 	}
 
 	init() {
@@ -48,19 +48,38 @@ export class Classic {
 			console.error("You cannot call un() if the throbber isn't initialized.");
 			return;
 		}
-		new Worker(this.#WORKER_SCRIPT);
-		console.log(this.state);
+		
+		let fps = 30;
+		let distancePerFrame = 5;
+		let circles = document.querySelectorAll(".circle");
+		let offset = 40;
+		let radius = 37.5; 
+
+		this.intervalId = setInterval(() => {
+			circles.forEach((el, id) => {
+				let currentXPos = el.offsetTop;
+
+				let currentAngle = Math.round(Math.sin((currentXPos - this.#CONTAINER_HEIGHT_IN_PX  / 2 - offset) / 37.5));
+				let newAngle = currentAngle + distancePerFrame;
+
+				let xPos = Math.round(this.#CONTAINER_WIDTH_IN_PX  / 2 + this.radius * Math.cos(newAngle)) - offset;
+				let yPos = Math.round(this.#CONTAINER_HEIGHT_IN_PX / 2 + this.radius * Math.sin(newAngle)) - offset;
+				el.style.top = xPos+"px";
+				el.style.left = yPos+"px";
+			});
+		}, 1000 / fps);
+
+
 		this.state = 2; // Running, can be halted.
-		console.log(this.state);
 	}
 
 	halt() {
 		console.debug("Classic - halt()");
-		console.log(this.state);
 		if (this.state != 2) {
 			console.error("You cannot call halt() if the throbber isn't already running.");
 			return;
 		}
+		clearInterval(this.intervalId);
 		this.cssHandler.removeCss();
 
 		$(this.#CONTAINER_SELECTOR).remove();
@@ -71,8 +90,9 @@ export class Classic {
 
 	#createCircle(arrayPosition, angle) {
 		console.debug("Creating circle");
-		let xPos = Math.round(this.#CONTAINER_WIDTH_IN_PX  / 2 + this.radius * Math.cos(angle)) - (this.#CIRCLE_DIAMETER_IN_PX / 2);
-		let yPos = Math.round(this.#CONTAINER_HEIGHT_IN_PX / 2 + this.radius * Math.sin(angle)) - (this.#CIRCLE_DIAMETER_IN_PX / 2);
+		let offset = (this.#CIRCLE_DIAMETER_IN_PX / 2)
+		let xPos = Math.round(this.#CONTAINER_WIDTH_IN_PX  / 2 + this.radius * Math.cos(angle)) - offset;
+		let yPos = Math.round(this.#CONTAINER_HEIGHT_IN_PX / 2 + this.radius * Math.sin(angle)) - offset;
 
 		let circle = this.circles[arrayPosition] = document.createElement("div");
 		circle.classList.add("circle");

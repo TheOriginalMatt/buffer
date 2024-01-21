@@ -5,5 +5,10 @@ let myClassic = new Classic();
 
 myClassic.init();
 myClassic.run();
-setTimeout(() => {myClassic.halt();}, 1000);
 
+
+$(document).ready(() => {
+	$("#halt-button").on("click", () => {
+		myClassic.halt();
+	})
+});
