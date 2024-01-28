@@ -20,6 +20,7 @@ export class Classic {
 		 */
 		this.radius = (this.#CONTAINER_WIDTH_IN_PX / 2) - (this.#CIRCLE_DIAMETER_IN_PX / 2); 
 		this.intervalId = -1;
+		this.offset = (this.#CIRCLE_DIAMETER_IN_PX / 2)
 	}
 
 	init() {
@@ -45,31 +46,23 @@ export class Classic {
 	run() {
 		console.debug("Classic - run()");
 		if (this.state != 1) {
-			console.error("You cannot call un() if the throbber isn't initialized.");
+			console.error("You cannot call run() if the throbber isn't initialized.");
 			return;
 		}
 		
 		let fps = 1;
 		let distancePerFrame = 5;
 		let circles = document.querySelectorAll(".circle");
-		let offset = 40;
-		console.log(this.radius);
 
 		this.intervalId = setInterval(() => {
 			circles.forEach((el, id) => {
-				let currentXPos = el.offsetTop;
+				console.log(el.offsetTop);
+				let nextAngle = this.#getAngleFromPos(el.offsetTop, el.offsetLeft) + distancePerFrame;
+				let nextPos = this.#getPosFromAngle(nextAngle);
 
-				let currentAngle = Math.round(Math.sin((currentXPos - this.#CONTAINER_HEIGHT_IN_PX  / 2 - offset) / 37.5));
-				let newAngle = currentAngle + distancePerFrame;
-
-
-				let xPos = Math.round(this.#CONTAINER_WIDTH_IN_PX  / 2 + this.radius * Math.cos(newAngle)) - offset;
-				let yPos = Math.round(this.#CONTAINER_HEIGHT_IN_PX / 2 + this.radius * Math.sin(newAngle)) - offset;
-
-				console.table({ currentX: currentXPos, currentAngle: currentAngle, newAngle: newAngle, newX: xPos})
-
-				el.style.top = xPos+"px";
-				el.style.left = yPos+"px";
+				console.log(nextPos);
+				el.style.top = nextPos.xPos+"px";
+				el.style.left = nextPos.yPos+"px";
 			});
 		}, 1000 / fps);
 
@@ -94,14 +87,25 @@ export class Classic {
 
 	#createCircle(arrayPosition, angle) {
 		console.debug("Creating circle");
-		let offset = (this.#CIRCLE_DIAMETER_IN_PX / 2)
-		let xPos = Math.round(this.#CONTAINER_WIDTH_IN_PX  / 2 + this.radius * Math.cos(angle)) - offset;
-		let yPos = Math.round(this.#CONTAINER_HEIGHT_IN_PX / 2 + this.radius * Math.sin(angle)) - offset;
-
+		
+		let pos = this.#getPosFromAngle(angle);
 		let circle = this.circles[arrayPosition] = document.createElement("div");
 		circle.classList.add("circle");
-		circle.style = "top: "+xPos+"px; left: "+yPos+"px;";
+		circle.style = "top: "+pos.xPos+"px; left: "+pos.yPos+"px;";
 
 		document.querySelector(this.#CONTAINER_SELECTOR).appendChild(circle);
+	}
+
+	#getPosFromAngle(angle) {
+		let xPos = Math.round(this.#CONTAINER_WIDTH_IN_PX  / 2 + this.radius * Math.cos(angle)) - this.offset;
+		let yPos = Math.round(this.#CONTAINER_HEIGHT_IN_PX / 2 + this.radius * Math.sin(angle)) - this.offset;
+		console.log("x: "+xPos+", y:"+yPos+" angle: "+angle);
+		return {"xPos": xPos, "yPos": yPos};
+	}
+
+	#getAngleFromPos(xPos, yPos) {
+		let temp = Math.round(Math.sin((xPos - this.#CONTAINER_HEIGHT_IN_PX  / 2 - this.offset) / this.radius));
+		console.log("x: "+xPos+", y:"+yPos+" angle: "+temp);
+		return temp;
 	}
 };
