@@ -97,16 +97,38 @@ export class Classic {
 	}
 
 	#getPosFromAngle(angle) {
-		let xPos = Math.round(this.#CONTAINER_WIDTH_IN_PX  / 2 + this.radius * Math.cos(angle)) - this.offset;
-		let yPos = Math.round(this.#CONTAINER_HEIGHT_IN_PX / 2 + this.radius * Math.sin(angle)) - this.offset;
+		let radians = this.#toRadians(angle);
+		let x = this.radius * Math.cos(radians);
+		let y = this.radius * Math.sin(radians);
+
+		// let normalizedX = this.#toDegrees(Math.cos(this.#toRadians(angle)));
+		// let xPos = this.#CONTAINER_WIDTH_IN_PX / 2 + this.radius * normalizedX - this.offset;
+		// let normalizedY = this.#toDegrees(Math.sin(this.#toRadians(angle)));
+
+		// let yPos = this.#CONTAINER_HEIGHT_IN_PX / 2 + this.radius * normalizedY - this.offset;
+		// let xPos = Math.round(this.#CONTAINER_WIDTH_IN_PX  / 2 + this.radius * Math.cos(angle)) - this.offset;
+		// let yPos = Math.round(this.#CONTAINER_HEIGHT_IN_PX / 2 + this.radius * Math.sin(angle)) - this.offset;
 		// console.log("x: "+xPos+", y:"+yPos+" angle: "+angle);
-		return {"xPos": xPos, "yPos": yPos};
+		// return {"xPos": xPos, "yPos": yPos};		
+		return {"xPos": x, "yPos": y};
 	}
 
 	#getAngleFromPos(xPos, yPos) {
-		return Math.round(Math.sin((xPos - this.#CONTAINER_HEIGHT_IN_PX  / 2 - this.offset) / this.radius)) + this.offset;
+		let normalizedX = this.#toDegrees(Math.acos(xPos / this.radius));
+		// console.log(xPos / this.radius, Math.acos(xPos / this.radius), this.#toDegrees(Math.acos(x)));
+		return Math.round(normalizedX);
+
+		// return Math.round(Math.sin((xPos - this.#CONTAINER_HEIGHT_IN_PX  / 2 - this.offset) / this.radius)) + this.offset;
 		// console.log("x: "+xPos+", y:"+yPos+" angle: "+temp);
 		// return temp;
+	}
+
+	#toRadians(degrees) {
+		return degrees * (Math.PI / 180);
+	}
+
+	#toDegrees(radians) {
+		return radians * (180 / Math.PI);
 	}
 
 	getPosFromAngle(angle) {
